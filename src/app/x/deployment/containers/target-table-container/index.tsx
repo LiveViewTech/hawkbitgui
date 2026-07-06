@@ -43,6 +43,7 @@ export default function TargetTableContainer() {
   };
 
   const handleOnRowClick = (target: Target) => {
+    targetsTableStore.setSelectedTarget(target);
     setTargetActionTargetId(target.controllerId);
   };
 
