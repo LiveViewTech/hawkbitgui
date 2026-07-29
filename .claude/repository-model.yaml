@@ -1,0 +1,346 @@
+version: 1
+facts:
+  languages:
+    - id: lang-typescript
+      value: TypeScript
+      evidence: ["package.json", "tsconfig.json"]
+    - id: lang-scss
+      value: SCSS
+      evidence: ["package.json#dependencies.sass", "src/app/globals.scss"]
+    - id: lang-javascript
+      value: JavaScript
+      evidence: ["eslint.config.mjs"]
+  frameworks:
+    - id: fw-nextjs
+      value: Next.js
+      evidence: ["package.json#dependencies.next", "next.config.ts"]
+    - id: fw-react
+      value: React
+      evidence: ["package.json#dependencies.react"]
+    - id: fw-next-auth
+      value: next-auth
+      evidence: ["package.json#dependencies.next-auth", "src/lib/auth-options.ts"]
+    - id: fw-react-query
+      value: TanStack React Query
+      evidence: ["package.json#dependencies.@tanstack/react-query", "src/app/providers.tsx"]
+    - id: fw-zustand
+      value: Zustand
+      evidence: ["package.json#dependencies.zustand", "src/stores/targets-store.ts"]
+    - id: fw-zod
+      value: Zod
+      evidence: ["package.json#dependencies.zod"]
+    - id: fw-react-hook-form
+      value: React Hook Form
+      evidence: ["package.json#dependencies.react-hook-form"]
+    - id: fw-axios
+      value: Axios
+      evidence: ["package.json#dependencies.axios", "src/lib/axios.ts"]
+  commands:
+    - id: cmd-dev
+      name: dev
+      value: next dev --turbopack
+      evidence: ["package.json#scripts.dev"]
+    - id: cmd-build
+      name: build
+      value: next build
+      evidence: ["package.json#scripts.build"]
+    - id: cmd-start
+      name: start
+      value: next start
+      evidence: ["package.json#scripts.start"]
+    - id: cmd-lint
+      name: lint
+      value: eslint .
+      evidence: ["package.json#scripts.lint"]
+    - id: cmd-format
+      name: format
+      value: prettier --write .
+      evidence: ["package.json#scripts.format"]
+    - id: cmd-format-check
+      name: format:check
+      value: prettier --check .
+      evidence: ["package.json#scripts.format:check"]
+  entry_points:
+    - id: entry-root-layout
+      value: src/app/layout.tsx
+      evidence: ["src/app/layout.tsx"]
+    - id: entry-home-page
+      value: src/app/page.tsx
+      evidence: ["src/app/page.tsx"]
+    - id: entry-middleware
+      value: src/middleware.ts
+      evidence: ["src/middleware.ts"]
+    - id: entry-nextauth-route
+      value: src/app/api/auth/[...nextauth]/route.ts
+      evidence: ["src/app/api/auth/[...nextauth]/route.ts"]
+    - id: entry-hawkbit-proxy
+      value: src/app/api/hawkbit/[...path]/route.ts
+      evidence: ["src/app/api/hawkbit/[...path]/route.ts"]
+    - id: entry-auth-options
+      value: src/lib/auth-options.ts
+      evidence: ["src/lib/auth-options.ts"]
+  components:
+    - id: comp-app-shell
+      name: App shell
+      path: src/app
+      evidence: ["src/app/layout.tsx", "src/app/providers.tsx", "src/app/page.tsx"]
+    - id: comp-api-routes
+      name: API routes
+      path: src/app/api
+      evidence: ["src/app/api/auth/[...nextauth]/route.ts", "src/app/api/hawkbit/[...path]/route.ts"]
+    - id: comp-shared-ui
+      name: Shared UI components
+      path: src/app/components
+      evidence: ["src/app/components/layout/index.tsx", "src/app/components/page-wrapper"]
+    - id: comp-deployment
+      name: Deployment management
+      path: src/app/x/deployment
+      evidence: ["src/app/x/deployment/page.tsx", "src/app/x/deployment/containers/deployment-dnd-layout-container/index.tsx"]
+    - id: comp-distributions
+      name: Distribution sets
+      path: src/app/x/distributions
+      evidence: ["src/app/x/distributions/page.tsx"]
+    - id: comp-rollout
+      name: Rollouts
+      path: src/app/x/rollout
+      evidence: ["src/app/x/rollout/page.tsx"]
+    - id: comp-software-modules
+      name: Software modules
+      path: src/app/x/software-modules
+      evidence: ["src/app/x/software-modules/components/software-module-card/index.tsx", "src/app/x/software-modules/hooks/use-get-paginated-software-modules.ts"]
+    - id: comp-target-filters
+      name: Target filters
+      path: src/app/x/target-filters
+      evidence: ["src/app/x/target-filters/page.tsx"]
+    - id: comp-upload
+      name: Artifact upload
+      path: src/app/x/upload
+      evidence: ["src/app/x/upload/page.tsx", "src/app/x/upload/hooks/use-upload-artifact.ts"]
+    - id: comp-configuration
+      name: System configuration
+      path: src/app/x/configuration
+      evidence: ["src/app/x/configuration/page.tsx", "src/app/x/configuration/containers/configuration-form-container/index.tsx"]
+    - id: comp-services
+      name: Hawkbit API services
+      path: src/services
+      evidence: ["src/services/targets-service.ts", "src/services/shared.ts"]
+    - id: comp-entities
+      name: Domain entities
+      path: src/entities
+      evidence: ["src/entities/index.ts", "src/entities/target.ts", "src/entities/filter.ts"]
+    - id: comp-stores
+      name: Zustand stores
+      path: src/stores
+      evidence: ["src/stores/targets-store.ts", "src/stores/targets-table-store.ts"]
+    - id: comp-lib
+      name: Shared libraries
+      path: src/lib
+      evidence: ["src/lib/auth-options.ts", "src/lib/axios.ts"]
+    - id: comp-middlewares
+      name: Next.js middlewares
+      path: src/middlewares
+      evidence: ["src/middlewares/chain-middlewares.ts", "src/middlewares/with-session-redirects-middleware.ts"]
+  dependencies:
+    - id: dep-next
+      name: next
+      type: external
+      evidence: ["package.json"]
+    - id: dep-react
+      name: react
+      type: external
+      evidence: ["package.json"]
+    - id: dep-react-dom
+      name: react-dom
+      type: external
+      evidence: ["package.json"]
+    - id: dep-next-auth
+      name: next-auth
+      type: external
+      evidence: ["package.json"]
+    - id: dep-axios
+      name: axios
+      type: external
+      evidence: ["package.json"]
+    - id: dep-tanstack-react-query
+      name: "@tanstack/react-query"
+      evidence: ["package.json"]
+      type: external
+    - id: dep-tanstack-react-table
+      name: "@tanstack/react-table"
+      type: external
+      evidence: ["package.json"]
+    - id: dep-zustand
+      name: zustand
+      type: external
+      evidence: ["package.json"]
+    - id: dep-zod
+      name: zod
+      type: external
+      evidence: ["package.json"]
+    - id: dep-react-hook-form
+      name: react-hook-form
+      type: external
+      evidence: ["package.json"]
+    - id: dep-dnd-kit-core
+      name: "@dnd-kit/core"
+      type: external
+      evidence: ["package.json"]
+    - id: dep-crypto-js
+      name: crypto-js
+      type: external
+      evidence: ["package.json"]
+    - id: dep-js-md5
+      name: js-md5
+      type: external
+      evidence: ["package.json"]
+    - id: dep-sass
+      name: sass
+      type: external
+      evidence: ["package.json"]
+    - id: dep-framer-motion
+      name: framer-motion
+      type: external
+      evidence: ["package.json"]
+  external_services:
+    - id: svc-hawkbit-api
+      value: Eclipse Hawkbit Management REST API
+      evidence: [".env.example", "README.md", "src/config/env.ts", "src/app/api/hawkbit/[...path]/route.ts"]
+    - id: svc-hawkbit-docker
+      value: hawkbit/hawkbit-update-server Docker image
+      evidence: ["docker-compose.yml"]
+  testing: []
+analysis:
+  purpose:
+    value: "Standalone Next.js GUI for Eclipse Hawkbit that manages device update targets, distribution sets, software modules, artifacts, and rollouts through Hawkbit's Management REST API without embedding Hawkbit server code."
+    confidence: high
+    evidence_refs: ["lang-typescript", "fw-nextjs", "svc-hawkbit-api", "comp-deployment", "comp-services", "entry-hawkbit-proxy"]
+  architecture:
+    value: "Browser UI under src/app/x calls static service classes via a browser axios client pointed at /api/hawkbit; that Next.js catch-all route attaches Basic auth from the next-auth JWT and proxies to NEXT_PUBLIC_HAWKBIT_API_URL/rest/v1. Login validates credentials against Hawkbit /rest/v1/userinfo. Session redirects run in chained middleware. Feature pages use container/component folders, React Query for server data, and Zustand for table/UI state."
+    confidence: high
+    evidence_refs: ["entry-hawkbit-proxy", "entry-auth-options", "entry-middleware", "comp-services", "comp-lib", "fw-react-query", "fw-zustand", "comp-deployment"]
+  patterns:
+    - id: pat-container-component
+      value: "Feature modules under src/app/x/<feature> split presentational components/ from stateful containers/ that wire stores, modals, and hooks."
+      confidence: high
+      evidence_refs: ["comp-deployment", "comp-distributions", "comp-rollout"]
+    - id: pat-static-service-classes
+      value: "Hawkbit REST calls live in static service classes under src/services that use the shared axios instance and return typed domain entities."
+      confidence: high
+      evidence_refs: ["comp-services", "fw-axios", "comp-entities"]
+    - id: pat-react-query-plus-zustand
+      value: "React Query owns server fetches/mutations; Zustand stores hold pagination, filters, selection, and other client UI state consumed by those hooks."
+      confidence: high
+      evidence_refs: ["fw-react-query", "fw-zustand", "comp-stores", "comp-deployment"]
+    - id: pat-fiql-filters
+      value: "List filters are composed via FilterFiql helpers in src/entities/filter.ts and sent as Hawkbit q/FIQL query params from services."
+      confidence: high
+      evidence_refs: ["comp-entities", "comp-services"]
+    - id: pat-bff-proxy
+      value: "All browser Hawkbit traffic goes through the authenticated /api/hawkbit BFF proxy rather than calling the Hawkbit host directly from the client."
+      confidence: high
+      evidence_refs: ["entry-hawkbit-proxy", "comp-lib", "svc-hawkbit-api"]
+  component_notes:
+    - ref: comp-app-shell
+      purpose: "Next.js App Router root with session-aware layout, React Query/Session providers, login page, and authenticated /x feature area."
+      confidence: high
+    - ref: comp-api-routes
+      purpose: "next-auth handler plus catch-all Hawkbit Management API proxy that injects Basic auth from the JWT."
+      confidence: high
+    - ref: comp-shared-ui
+      purpose: "Reusable UI primitives (tables, forms, modals, layout chrome) shared across feature pages."
+      confidence: high
+    - ref: comp-deployment
+      purpose: "Primary deployment workspace for targets and distribution assignment, including drag-and-drop layout and action history."
+      confidence: high
+    - ref: comp-distributions
+      purpose: "CRUD and inspection UI for distribution sets, tags, metadata, and assigned software modules."
+      confidence: high
+    - ref: comp-rollout
+      purpose: "Rollout create/edit/copy, approve/start/pause, and deploy-group target inspection."
+      confidence: high
+    - ref: comp-software-modules
+      purpose: "Shared software-module UI (card/table/forms/metadata) embedded by upload and distributions pages; no dedicated page.tsx route."
+      confidence: high
+    - ref: comp-target-filters
+      purpose: "Saved target filter management used when selecting device cohorts."
+      confidence: high
+    - ref: comp-upload
+      purpose: "Artifact upload/download/delete for software modules, including client-side hash calculation."
+      confidence: high
+    - ref: comp-configuration
+      purpose: "System configuration form UI backed by system-configuration-service."
+      confidence: high
+    - ref: comp-services
+      purpose: "Typed static clients for Hawkbit REST resources (targets, distributions, modules, rollouts, tags, config)."
+      confidence: high
+    - ref: comp-entities
+      purpose: "Domain types, status constants, type guards, and FIQL filter helpers shared by services and UI."
+      confidence: high
+    - ref: comp-stores
+      purpose: "Zustand stores for table pagination, filters, tags, and page-local UI state."
+      confidence: high
+    - ref: comp-lib
+      purpose: "next-auth Credentials provider options and browser axios instance with 401 sign-out."
+      confidence: high
+    - ref: comp-middlewares
+      purpose: "Composable middleware chain that redirects unauthenticated users to /login and authenticated users away from login."
+      confidence: high
+  service_notes:
+    - ref: svc-hawkbit-api
+      purpose: "Backend for all management operations and login validation."
+      integration: "Configured via NEXT_PUBLIC_HAWKBIT_API_URL; proxied by src/app/api/hawkbit/[...path]/route.ts with Basic auth from the JWT hawkbitAuth claim; login hits /rest/v1/userinfo."
+      confidence: high
+    - ref: svc-hawkbit-docker
+      purpose: "Local Hawkbit update server companion for docker-compose development."
+      integration: "docker-compose.yml runs hawkbit/hawkbit-update-server:latest on port 8080 with CORS allowed for http://localhost:3000."
+      confidence: high
+  dangerous_areas:
+    - id: danger-jwt-basic-auth
+      value: "Hawkbit username/password Basic credentials are base64-encoded into JWT claim hawkbitAuth"
+      reason: "Compromise of NEXTAUTH_SECRET or JWT material exposes reusable Hawkbit credentials; session callbacks intentionally omit hawkbitAuth from the client session, but the token still carries it server-side."
+      confidence: high
+      evidence_refs: ["entry-auth-options", "entry-hawkbit-proxy", "comp-lib"]
+    - id: danger-cors-wildcard
+      value: "next.config.ts sets Access-Control-Allow-Origin to * together with Allow-Credentials true on all routes"
+      reason: "Wildcard ACAO with credentials is browser-invalid for credentialed cross-origin calls and is a footgun if this GUI is exposed beyond a trusted network."
+      confidence: high
+      evidence_refs: ["fw-nextjs"]
+    - id: danger-large-upload-limit
+      value: "Server Actions and proxy client body size limits are set to 4gb"
+      reason: "Artifact uploads can accept very large bodies; misconfigured reverse proxies or abuse can exhaust memory/disk."
+      confidence: high
+      evidence_refs: ["fw-nextjs", "comp-upload"]
+    - id: danger-insecure-hash-fallback
+      value: "Artifact hashing falls back to crypto-js when Web Crypto subtle is unavailable"
+      reason: "Comment in software-module-artifacts-service.ts marks this path for insecure HTTP local usage; do not treat it as a production crypto story."
+      confidence: high
+      evidence_refs: ["comp-upload", "dep-crypto-js", "dep-js-md5"]
+  questions:
+    - id: q-npm-vs-bun
+      question: "README and package-lock.json document npm workflows, but Dockerfile installs/runs via bun and optionally copies bun.lockb. Which package manager is canonical for CI and production images?"
+      area: build-tooling
+      priority: high
+    - id: q-no-automated-tests
+      question: "No *.test.*/*.spec.* files, test script, or CI workflow were found. Is the absence of an automated test suite intentional?"
+      area: testing
+      priority: medium
+    - id: q-auth-model-longevity
+      question: "Is persisting Hawkbit Basic credentials inside the next-auth JWT the long-term auth design, or is a token-exchange / session-cookie approach planned?"
+      area: security
+      priority: high
+      evidence_refs: ["entry-auth-options", "danger-jwt-basic-auth"]
+    - id: q-cors-production-intent
+      question: "Are the wildcard CORS headers in next.config.ts intentional for production deployments, or only a local-dev convenience?"
+      area: security
+      priority: medium
+      evidence_refs: ["danger-cors-wildcard", "fw-nextjs"]
+    - id: q-distribution-set-types-page
+      question: "src/app/x/distribution-set-types has only a thin page surface compared with other /x features; is that area incomplete or intentionally minimal?"
+      area: product-scope
+      priority: low
+      evidence_refs: ["comp-distributions"]
+    - id: q-software-modules-routing
+      question: "src/app/x/software-modules has components/containers/hooks but no page.tsx; is it intentionally only a shared embed for upload/distributions, or is a standalone route missing?"
+      area: product-scope
+      priority: low
+      evidence_refs: ["comp-software-modules", "comp-upload"]
