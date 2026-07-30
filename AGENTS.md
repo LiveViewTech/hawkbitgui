@@ -8,7 +8,6 @@ Standalone Next.js GUI for Eclipse Hawkbit. Operators manage targets, distributi
 - Stack: TypeScript, Next.js 16, React 19, next-auth, TanStack React Query, Zustand, Axios, Zod, Sass
 - Node: `>=20.9.0` (see `package.json#engines`)
 - Backend: Eclipse Hawkbit Management API via `NEXT_PUBLIC_HAWKBIT_API_URL`
-- Subguides listed under Directory Map
 
 ## Commands
 
@@ -39,31 +38,34 @@ Env (copy `.env.example` → `.env`):
 - Path alias: `@/*` → `src/*` (`tsconfig.json`)
 - Authenticated UI lives under `/x/*`; login at `/login`
 - Feature folders use `components/` (presentational) + `containers/` (state/wiring) + `hooks/`
+- Shared UI folders: `component-name/index.tsx` + `styles.module.scss`
 - Browser Hawkbit calls go through `/api/hawkbit` only — never call `NEXT_PUBLIC_HAWKBIT_API_URL` from client code
+- Services: static class methods + sibling `*-service.types.ts`; build list `q` params with `FilterFiql` (`src/entities/filter.ts`)
+- Artifact uploads compute MD5/SHA-1/SHA-256 client-side before POST (`SoftwareModuleArtifactsService`)
 - Server data: React Query hooks; table/UI state: Zustand stores
 - No automated test script or CI workflow is present in this repo
 
 ## Directory Map
 
-- `src/app/api/` → see `src/app/api/AGENTS.md`
-- `src/app/components/` → see `src/app/components/AGENTS.md`
-- `src/app/x/deployment/` → see `src/app/x/deployment/AGENTS.md`
+- `src/app/api/` — next-auth handler + Hawkbit BFF proxy (`/api/hawkbit`)
+- `src/app/components/` — shared UI primitives and app chrome
+- `src/app/x/deployment/` — targets, actions, distribution assignment (DnD via `@dnd-kit/core`)
 - `src/app/x/distributions/` — distribution sets CRUD/tags/metadata
 - `src/app/x/rollout/` — rollout lifecycle UI
 - `src/app/x/upload/` — artifact upload/download
 - `src/app/x/target-filters/` — saved target filters
 - `src/app/x/configuration/` — system configuration form
 - `src/app/x/software-modules/` — shared module UI (embedded; no `page.tsx`)
-- `src/services/` → see `src/services/AGENTS.md`
-- `src/entities/` → see `src/entities/AGENTS.md`
-- `src/stores/` → see `src/stores/AGENTS.md`
+- `src/services/` — typed Hawkbit Management API clients
+- `src/entities/` — domain types, status maps, FIQL helpers
+- `src/stores/` — Zustand stores for pagination/filters/selection
 - `src/lib/` — `auth-options.ts`, browser axios instance
 - `src/middlewares/` — session redirect chain used by `src/middleware.ts`
 - `src/config/env.ts` — env accessor for Hawkbit/next-auth URLs
 
 ## Gotchas
 
-- **JWT carries Hawkbit Basic credentials** in claim `hawkbitAuth` (`src/lib/auth-options.ts`). Session object omits it; proxy reads it server-side (`src/app/api/hawkbit/[...path]/route.ts`).
+- **JWT carries Hawkbit Basic credentials** in claim `hawkbitAuth` (`src/lib/auth-options.ts`; session/JWT `maxAge` 1h). Session object omits it; proxy reads it server-side (`src/app/api/hawkbit/[...path]/route.ts`).
 - **CORS headers** in `next.config.ts` set `Access-Control-Allow-Origin: *` with credentials enabled — verify before exposing beyond trusted networks.
-- **Upload body limit is 4gb** (`next.config.ts` `serverActions.bodySizeLimit` / `proxyClientMaxBodySize`).
+- **Upload body limit is 4gb** (`next.config.ts` `serverActions.bodySizeLimit` / `proxyClientMaxBodySize`); proxy passes through multipart `FormData` and binary Accept responses.
 - Dockerfile runs `bun`; repo commits `package-lock.json` and README documents npm — confirm which package manager your environment expects.
