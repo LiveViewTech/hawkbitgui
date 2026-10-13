@@ -4,9 +4,13 @@ RUN npm install -g bun@1.2.5
 
 WORKDIR /app
 
-COPY package.json bun.lockb* ./
+RUN chown node:node /app
 
-COPY . .
+USER node
+
+COPY --chown=node:node package.json bun.lockb* ./
+
+COPY --chown=node:node . .
 
 RUN bun install --no-frozen-lockfile
 
