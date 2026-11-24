@@ -1,0 +1,8 @@
+# Mai nell'immagine: i segreti si passano a runtime (env/env_file) e le dipendenze le installa bun dentro la
+# build per l'architettura di destinazione (amd64/arm64), non quelle compilate sulla macchina di build.
+.env
+.env.*
+!.env.example
+node_modules
+.next
+.git

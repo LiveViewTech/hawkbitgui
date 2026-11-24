@@ -8,12 +8,11 @@ RUN chown node:node /app
 
 USER node
 
-COPY --chown=node:node package.json bun.lockb* ./
-
-COPY --chown=node:node . .
+COPY --chown=node:node package.json package-lock.json bun.lockb* ./
 
 RUN bun install --no-frozen-lockfile
 
+COPY --chown=node:node . .
 
 
 # Development build stage
@@ -24,6 +23,7 @@ ENV NODE_ENV=development
 EXPOSE 3000
 
 CMD ["bun", "run", "dev"]
+
 
 # Production build stage
 FROM common-build-stage AS production-build-stage
