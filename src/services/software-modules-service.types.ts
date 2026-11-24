@@ -1,5 +1,6 @@
 import { ApiResponse } from './types';
 import { SoftwareModule } from '@/entities/software-module';
+import { SoftwareModuleMetadata } from '@/entities/metadata';
 export interface FetchSoftwareModulesInput {
   queryParams?: { q?: string; offset?: number; limit?: number; sort?: string };
 }
@@ -21,3 +22,7 @@ export interface CreateSoftwareModuleInput {
 export type GetSoftwareModulesResponse = ApiResponse<SoftwareModule[]>;
 
 export type CreateSoftwareModuleResponse = SoftwareModule[];
+
+export type GetSoftwareModuleMetadataResponse = ApiResponse<SoftwareModuleMetadata[]>;
+
+export type GetSoftwareModuleMetadataOutput = SoftwareModuleMetadata[];

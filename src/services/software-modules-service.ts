@@ -1,13 +1,15 @@
 import axiosInstance from '@/lib/axios';
 import { SoftwareModule } from '@/entities/software-module';
+import { SoftwareModuleMetadata } from '@/entities/metadata';
 import {
   CreateSoftwareModuleInput,
   CreateSoftwareModuleResponse,
   FetchSoftwareModulesInput,
   FetchSoftwareModulesOutput,
+  GetSoftwareModuleMetadataOutput,
+  GetSoftwareModuleMetadataResponse,
   GetSoftwareModulesResponse,
 } from './software-modules-service.types';
-import { GetMetadataOutput, GetMetadataResponse } from './targets-service.types';
 
 export class SoftwareModulesService {
   static async fetchSoftwareModules(input?: FetchSoftwareModulesInput): Promise<FetchSoftwareModulesOutput> {
@@ -33,9 +35,9 @@ export class SoftwareModulesService {
     await axiosInstance.delete(`/softwaremodules/${softwareModuleId}`);
   }
 
-  static async getMetadata(softwareModuleId: number | string): Promise<GetMetadataOutput> {
+  static async getMetadata(softwareModuleId: number | string): Promise<GetSoftwareModuleMetadataOutput> {
     try {
-      const response = await axiosInstance.get<GetMetadataResponse>(`/softwaremodules/${softwareModuleId}/metadata`);
+      const response = await axiosInstance.get<GetSoftwareModuleMetadataResponse>(`/softwaremodules/${softwareModuleId}/metadata`);
       return response.data.content;
     } catch (error) {
       console.error('Failed to get Metadata', error);
@@ -43,18 +45,20 @@ export class SoftwareModulesService {
     }
   }
 
-  static async createMetadata(softwareModuleId: number | string, metadata: { key: string; value: string }): Promise<void> {
+  static async createMetadata(softwareModuleId: number | string, metadata: SoftwareModuleMetadata): Promise<void> {
     try {
-      await axiosInstance.post(`/softwaremodules/${softwareModuleId}/metadata`, [metadata]);
+      const { key, value, targetVisible = false } = metadata;
+      await axiosInstance.post(`/softwaremodules/${softwareModuleId}/metadata`, [{ key, value, targetVisible }]);
     } catch (error) {
       console.error('Failed to create Metadata', error);
       throw error;
     }
   }
 
-  static async updateMetadata(softwareModuleId: number | string, metadata: { key: string; value: string }): Promise<void> {
+  static async updateMetadata(softwareModuleId: number | string, metadata: SoftwareModuleMetadata): Promise<void> {
     try {
-      await axiosInstance.put(`/softwaremodules/${softwareModuleId}/metadata/${metadata.key}`, { value: metadata.value });
+      const { key, value, targetVisible = false } = metadata;
+      await axiosInstance.put(`/softwaremodules/${softwareModuleId}/metadata/${key}`, { value, targetVisible });
     } catch (error) {
       console.error('Failed to update Metadata', error);
       throw error;

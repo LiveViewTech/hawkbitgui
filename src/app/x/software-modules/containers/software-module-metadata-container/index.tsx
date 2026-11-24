@@ -6,7 +6,7 @@ import CreateMetadataForm from '@/app/components/metadata-form';
 import { useSoftwareModulesStore } from '@/stores/software-modules-store';
 import { useGetSoftwareModuleMetadata } from '../../hooks/use-get-software-module-metadata';
 import SoftwareModuleMetadata from '../../components/software-module-metadata';
-import { Metadata } from '@/entities';
+import type { SoftwareModuleMetadata as SoftwareModuleMetadataEntity } from '@/entities';
 import { useCreateSoftwareModuleMetadata } from '../../hooks/use-create-software-module-metadata';
 
 export default function SoftwareModuleMetadataContainer() {
@@ -22,7 +22,7 @@ export default function SoftwareModuleMetadataContainer() {
     setIsCreateMetadataModalOpen(true);
   };
 
-  const handleSubmit = async (data: Metadata) => {
+  const handleSubmit = async (data: SoftwareModuleMetadataEntity) => {
     if (!selectedSoftwareModule) {
       return;
     }
@@ -36,7 +36,7 @@ export default function SoftwareModuleMetadataContainer() {
     <>
       <SoftwareModuleMetadata onAddClick={handleAddClick} />
       <Modal isOpen={isCreateMetadataModalOpen} onClose={() => setIsCreateMetadataModalOpen(false)} size={'fitContent'}>
-        <CreateMetadataForm onSubmit={handleSubmit} mode={'create'} />
+        <CreateMetadataForm onSubmit={handleSubmit} mode={'create'} showTargetVisible />
       </Modal>
     </>
   );
