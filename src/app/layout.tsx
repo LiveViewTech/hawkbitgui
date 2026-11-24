@@ -3,6 +3,7 @@ import './globals.scss';
 import { getServerSession } from 'next-auth';
 import Providers from './providers';
 import { authOptions } from '@/lib/auth-options';
+import { environment } from '@/config/env';
 import { Toaster } from 'react-hot-toast';
 
 export const metadata: Metadata = {
@@ -20,7 +21,9 @@ export default async function RootLayout({
   return (
     <html lang='en'>
       <body>
-        <Providers session={session}>{children}</Providers>
+        <Providers session={session} sessionIdleTimeout={environment.sessionIdleTimeout}>
+          {children}
+        </Providers>
         <Toaster />
       </body>
     </html>

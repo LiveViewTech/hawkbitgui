@@ -12,6 +12,20 @@ export type LoginFormContainerProps = {
   className?: string;
 };
 
+// Only same-site paths: an absolute or protocol-relative callbackUrl would be an open redirect.
+const getRedirectAfterLogin = (callbackUrl: string | null) => {
+  if (
+    !callbackUrl ||
+    !callbackUrl.startsWith('/') ||
+    callbackUrl.startsWith('//') ||
+    callbackUrl.startsWith('/\\') ||
+    callbackUrl.startsWith(AppRoutes.login)
+  ) {
+    return AppRoutes.deployment;
+  }
+  return callbackUrl;
+};
+
 export default function LoginFormContainer({ className }: LoginFormContainerProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -21,7 +35,8 @@ export default function LoginFormContainer({ className }: LoginFormContainerProp
     if (error) {
       switch (error) {
         case 'unauthorized':
-          toast.error('Your session has expired. Please log in again.');
+          // Fixed id: the message is shown once even if the effect runs again.
+          toast.error('Your session has expired. Please log in again.', { id: 'session-expired' });
           break;
         default:
           toast.error('An error occurred. Please try again.');
@@ -46,7 +61,7 @@ export default function LoginFormContainer({ className }: LoginFormContainerProp
         return;
       }
 
-      router.push(AppRoutes.deployment);
+      router.push(getRedirectAfterLogin(searchParams.get('callbackUrl')));
       router.refresh();
     } catch (error) {
       handleErrorWithToast(error);

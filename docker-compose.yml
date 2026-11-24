@@ -8,6 +8,7 @@ services:
       - ./.env
     environment:
       - NEXT_PUBLIC_HAWKBIT_API_URL=http://localhost:8080
+      - SESSION_IDLE_TIMEOUT=${SESSION_IDLE_TIMEOUT:-3600}
     ports:
       - '3000:3000'
     volumes:
