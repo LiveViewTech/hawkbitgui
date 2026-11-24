@@ -38,13 +38,15 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+  // Idle timeout: with the JWT strategy every call to /api/auth/session re-issues the session cookie with a new
+  // expiry (updateAge only applies to database sessions, so it is not set). The browser calls that endpoint only
+  // on user activity (see useRefreshSessionOnActivity); the hawkBit proxy and the background polling never renew it.
   session: {
     strategy: 'jwt',
-    maxAge: 3600, // 1 hour
-    updateAge: 300, // 5 minutes
+    maxAge: environment.sessionIdleTimeout,
   },
   jwt: {
-    maxAge: 3600, // 1 hour
+    maxAge: environment.sessionIdleTimeout,
   },
   callbacks: {
     async jwt({ token, user }) {

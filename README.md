@@ -49,6 +49,16 @@ Notes:
 - `NEXTAUTH_URL` must match the URL where users access HawkbitGUI.
 - `NEXT_PUBLIC_HAWKBIT_API_URL` must point to your Hawkbit server base URL.
 
+Optional:
+
+- `SESSION_IDLE_TIMEOUT`: idle timeout of the login session, in seconds (default `3600`). The session expires only
+  after this time without user activity: clicks, key presses, scrolling (wheel, touch or keyboard) and coming back
+  to the browser tab. The background refresh of the pages does not keep it alive. While the user is active the
+  session is renewed at most once a minute (every quarter of the timeout, if that is shorter). When the session
+  expires the user is sent to the login page and, after logging in again, back to the page they were on. The value
+  is read at runtime, so it can be changed in the container without rebuilding the image; an invalid value is
+  logged as a warning and the default is used.
+
 ### 3) Development mode
 
 Start the development server:

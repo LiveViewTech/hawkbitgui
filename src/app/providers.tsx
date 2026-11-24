@@ -5,6 +5,7 @@ import { ReactNode } from 'react';
 import { SessionProvider } from 'next-auth/react';
 import { Session } from 'next-auth';
 import { handleErrorWithToast } from '@/utils/handle-error-with-toast';
+import { useRefreshSessionOnActivity } from '@/app/hooks/use-refresh-session-on-activity';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,10 +20,18 @@ const queryClient = new QueryClient({
   },
 });
 
-export default function Providers({ children, session }: { children: ReactNode; session: Session | null }) {
+function SessionActivityRefresher({ idleTimeoutSeconds }: { idleTimeoutSeconds: number }) {
+  useRefreshSessionOnActivity(idleTimeoutSeconds);
+  return null;
+}
+
+export default function Providers({ children, session, sessionIdleTimeout }: { children: ReactNode; session: Session | null; sessionIdleTimeout: number }) {
   return (
     <QueryClientProvider client={queryClient}>
-      <SessionProvider session={session}>{children}</SessionProvider>
+      <SessionProvider session={session}>
+        <SessionActivityRefresher idleTimeoutSeconds={sessionIdleTimeout} />
+        {children}
+      </SessionProvider>
     </QueryClientProvider>
   );
 }

@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { signOut } from 'next-auth/react';
+import { AppRoutes } from '@/utils/routes';
 
-const UNAUTHORIZED_CALLBACK_URL = '/login?error=unauthorized';
+// Several requests (e.g. the polling) can get a 401 at the same time: sign out only once.
 let isSigningOut = false;
 
 const signOutOnUnauthorized = () => {
@@ -10,7 +11,12 @@ const signOutOnUnauthorized = () => {
   }
 
   isSigningOut = true;
-  void signOut({ callbackUrl: UNAUTHORIZED_CALLBACK_URL });
+  // After the new login the user goes back to the page they were on.
+  const loginParams = new URLSearchParams({
+    error: 'unauthorized',
+    callbackUrl: `${window.location.pathname}${window.location.search}`,
+  });
+  void signOut({ callbackUrl: `${AppRoutes.login}?${loginParams}` });
 };
 
 const axiosInstance = axios.create({
