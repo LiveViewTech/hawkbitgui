@@ -88,16 +88,22 @@ emulation for the architecture your machine does not run natively. One-time setu
 # installs them permanently (e.g. the qemu-user-static package).
 docker run --privileged --rm tonistiigi/binfmt --install arm64,amd64
 
-# Create and select a multi-platform builder
-docker buildx create --name hawkbitgui-builder --driver docker-container --use
-docker buildx inspect --bootstrap   # "Platforms" must list linux/amd64 and linux/arm64
+# Create a multi-platform builder
+docker buildx create --name hawkbitgui-builder --driver docker-container
+docker buildx inspect hawkbitgui-builder --bootstrap   # "Platforms" must list linux/amd64 and linux/arm64
 ```
+
+The build command below selects this builder with `--builder`, so the default builder (used by your other
+projects) does not change. Without it Buildx uses the current builder, and if that one uses the `docker` driver
+the build fails with `Multi-platform build is not supported for the docker driver`. Any other builder with the
+`docker-container` driver works as well: list them with `docker buildx ls`.
 
 Build both architectures and push them to a registry as a single multi-arch image
 (run `docker login <registry>` first):
 
 ```bash
 docker buildx build \
+  --builder hawkbitgui-builder \
   --platform linux/amd64,linux/arm64 \
   --target production-build-stage \
   -t <registry>/<namespace>/hawkbitgui:<version> \
