@@ -5,11 +5,13 @@ import { useForm } from 'react-hook-form';
 import Button from '@/app/components/button';
 import Input from '../input';
 import TextArea from '@/app/components/text-area';
+import Checkbox from '@/app/components/checkbox';
 import Text from '../text';
 
 export interface FormData {
   key: string;
   value: string;
+  targetVisible?: boolean;
 }
 
 interface CreateMetadataFormProps {
@@ -17,9 +19,11 @@ interface CreateMetadataFormProps {
   onCancel?: () => void;
   defaultValues?: Partial<FormData>;
   mode?: 'create' | 'edit';
+  /** Shows the "Target visible" checkbox (only software module metadata supports it). */
+  showTargetVisible?: boolean;
 }
 
-export default function CreateMetadataForm({ onSubmit, onCancel, defaultValues, mode = 'create' }: CreateMetadataFormProps) {
+export default function CreateMetadataForm({ onSubmit, onCancel, defaultValues, mode = 'create', showTargetVisible = false }: CreateMetadataFormProps) {
   const {
     register,
     handleSubmit,
@@ -28,6 +32,7 @@ export default function CreateMetadataForm({ onSubmit, onCancel, defaultValues, 
     defaultValues: {
       key: defaultValues?.key ?? '',
       value: defaultValues?.value ?? '',
+      targetVisible: defaultValues?.targetVisible ?? false,
     },
   });
 
@@ -54,6 +59,14 @@ export default function CreateMetadataForm({ onSubmit, onCancel, defaultValues, 
           <label className={styles.label}>Value</label>
           <TextArea placeholder='Value' {...register('value')} className={styles.textarea} error={errors.value && 'This field is required'} />
         </div>
+        {showTargetVisible && (
+          <div className={styles.checkboxContainer}>
+            <Checkbox id='targetVisible' description='Target visible' {...register('targetVisible')} />
+            <Text variant='paragraph-sm' color='text-secondary'>
+              The key and value are sent to the device together with the deployment of this software module.
+            </Text>
+          </div>
+        )}
 
         <div className={styles.buttonContainer}>
           <Button type='submit'>{isEditMode ? 'Update' : 'Save'}</Button>

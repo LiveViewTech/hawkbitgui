@@ -1,6 +1,6 @@
 'use client';
 
-import { Metadata } from '@/entities';
+import { SoftwareModuleMetadata } from '@/entities';
 import React, { useState } from 'react';
 import ConfirmDeleteModal from '@/app/components/confirm-delete-modal';
 import { useConfirmDialog, useModal } from '@/app/hooks';
@@ -14,7 +14,7 @@ import { useDeleteSoftwareModuleMetadata } from '../../hooks/use-delete-software
 
 export default function SoftwareModuleMetadataTableContainer() {
   const selectedSoftwareModule = useSoftwareModulesStore((state) => state.selectedSoftwareModule);
-  const [selectedMetadata, setSelectedMetadata] = useState<Metadata | undefined>();
+  const [selectedMetadata, setSelectedMetadata] = useState<SoftwareModuleMetadata | undefined>();
 
   const {
     data: metadata,
@@ -27,9 +27,9 @@ export default function SoftwareModuleMetadataTableContainer() {
   const { deleteSoftwareModuleMetadata } = useDeleteSoftwareModuleMetadata();
 
   const editMetadataModal = useModal();
-  const confirmDialog = useConfirmDialog<Metadata>();
+  const confirmDialog = useConfirmDialog<SoftwareModuleMetadata>();
 
-  const handleDeleteClick = (item: Metadata) => {
+  const handleDeleteClick = (item: SoftwareModuleMetadata) => {
     confirmDialog.open(item, async () => {
       if (!selectedSoftwareModule) {
         return;
@@ -39,7 +39,7 @@ export default function SoftwareModuleMetadataTableContainer() {
     });
   };
 
-  const handleEditClick = (metadata: Metadata) => {
+  const handleEditClick = (metadata: SoftwareModuleMetadata) => {
     setSelectedMetadata(metadata);
     editMetadataModal.open();
   };
@@ -49,7 +49,7 @@ export default function SoftwareModuleMetadataTableContainer() {
     editMetadataModal.close();
   };
 
-  const handleEditSubmit = async (data: Metadata) => {
+  const handleEditSubmit = async (data: SoftwareModuleMetadata) => {
     if (!selectedSoftwareModule) {
       return;
     }
@@ -60,14 +60,14 @@ export default function SoftwareModuleMetadataTableContainer() {
 
   return (
     <>
-      <MetadataTable metadata={metadata ?? []} isLoading={isLoading} onDeleteClick={handleDeleteClick} onEditClick={handleEditClick} />
+      <MetadataTable metadata={metadata ?? []} isLoading={isLoading} onDeleteClick={handleDeleteClick} onEditClick={handleEditClick} showTargetVisible />
       <ConfirmDeleteModal isOpen={confirmDialog.isOpen} onConfirm={confirmDialog.confirm} onClose={confirmDialog.close}>
         <ConfirmDeleteModal.Message>
           Are you sure you want to delete metadata <span style={{ fontWeight: 'bold' }}>{confirmDialog.data?.key}</span>?
         </ConfirmDeleteModal.Message>
       </ConfirmDeleteModal>
       <Modal isOpen={editMetadataModal.isOpen} onClose={handleCloseEdit}>
-        <MetadataForm mode={'edit'} onSubmit={handleEditSubmit} onCancel={handleCloseEdit} defaultValues={selectedMetadata} />
+        <MetadataForm mode={'edit'} onSubmit={handleEditSubmit} onCancel={handleCloseEdit} defaultValues={selectedMetadata} showTargetVisible />
       </Modal>
     </>
   );

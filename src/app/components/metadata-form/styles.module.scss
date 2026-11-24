@@ -44,6 +44,12 @@
   }
 }
 
+.checkboxContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .buttonContainer {
   display: flex;
   align-items: center;
