@@ -71,6 +71,62 @@ npm run start
 
 The app runs on port `3000` by default.
 
+## Docker
+
+The `Dockerfile` has two targets: `development-build-stage` (runs `next dev`) and
+`production-build-stage` (runs `next build` and then `next start`). The container runs as the
+non-root `node` user. No configuration is baked into the image: `NEXTAUTH_SECRET`, `NEXTAUTH_URL`
+and `HAWKBIT_API_URL` are passed when the container starts, so one image works with any Hawkbit server.
+
+### Multi-architecture build (amd64 + arm64)
+
+A multi-platform image needs a Buildx builder with the `docker-container` driver, plus QEMU
+emulation for the architecture your machine does not run natively. One-time setup:
+
+```bash
+# Register the QEMU emulators. Registrations are lost on reboot unless your distribution
+# installs them permanently (e.g. the qemu-user-static package).
+docker run --privileged --rm tonistiigi/binfmt --install arm64,amd64
+
+# Create and select a multi-platform builder
+docker buildx create --name hawkbitgui-builder --driver docker-container --use
+docker buildx inspect --bootstrap   # "Platforms" must list linux/amd64 and linux/arm64
+```
+
+Build both architectures and push them to a registry as a single multi-arch image
+(run `docker login <registry>` first):
+
+```bash
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  --target production-build-stage \
+  -t <registry>/<namespace>/hawkbitgui:<version> \
+  --push \
+  .
+```
+
+Notes:
+
+- A multi-platform image cannot be loaded into the local image store with `--load`, unless your
+  Docker Engine uses the containerd image store. To test an architecture locally, build it alone:
+  `docker buildx build --platform linux/arm64 --target production-build-stage --load -t hawkbitgui:arm64 .`
+- The emulated architecture builds much more slowly: under QEMU the `next build` step can take
+  several minutes.
+- `.dockerignore` keeps `.env*`, `node_modules`, `.next` and `.git` out of the build context.
+  Dependencies are installed inside the build for each target architecture, never copied from the host.
+
+### Run the image
+
+```bash
+docker run -d -p 3000:3000 \
+  -e NEXTAUTH_SECRET=replace-with-a-long-random-secret \
+  -e NEXTAUTH_URL=https://hawkbitgui.example.com \
+  -e HAWKBIT_API_URL=http://hawkbit.example.com:8080 \
+  <registry>/<namespace>/hawkbitgui:<version>
+```
+
+Docker automatically pulls the variant that matches the host architecture.
+
 ## Configuration
 
 You have to set the URL of the Hawkbit Server with the `HAWKBIT_API_URL` variable (in `.env`, or as a container environment variable).
