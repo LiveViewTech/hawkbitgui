@@ -13,34 +13,10 @@ import { useDistributionsPolling } from '@/app/hooks/use-distributions-polling';
 import { useTargetsTableStore } from '@/stores/targets-table-store';
 import ConfirmationModal from '@/app/components/confirmation-modal';
 import ScheduleForm, { FormData as ScheduleFormData } from '@/app/x/deployment/components/schedule-form';
-import { AssignConfig } from '@/services/targets-service.types';
+import { mapScheduleFormDataToAssignConfig } from '@/app/x/deployment/utils/map-schedule-form-data-to-assign-config';
 import { TargetsService } from '@/services/targets-service';
 import { handleErrorWithToast } from '@/utils/handle-error-with-toast';
 import { useTargetActionsTableStore } from '@/stores/target-action-table-store';
-
-const mapScheduleFormDataToAssignConfig = (id: string | number, data?: ScheduleFormData): AssignConfig => {
-  if (!data) {
-    return { id };
-  }
-
-  const assignConfig: AssignConfig = {
-    id,
-    type: data.mode,
-    maintenanceWindow: data.maintenanceWindow
-      ? {
-          schedule: data.schedule,
-          duration: data.duration,
-          timezone: data.timeZone,
-        }
-      : undefined,
-  };
-
-  if (data.mode === 'timeforced' && data.forcedDate) {
-    assignConfig.forcetime = new Date(data.forcedDate).getTime();
-  }
-
-  return assignConfig;
-};
 
 export default function DistributionsTableContainer() {
   const filteredDistributions = useDistributionsTableStore((state) => state.filteredDistributions);

@@ -13,34 +13,11 @@ import { DistributionSetsService } from '@/services/distribution-sets-service';
 import ConfirmationModal from '@/app/components/confirmation-modal';
 import { useConfirmDialog } from '@/app/hooks';
 import ScheduleForm, { FormData as ScheduleFormData } from '@/app/x/deployment/components/schedule-form';
-import { AssignConfig } from '@/services/targets-service.types';
+import { mapScheduleFormDataToAssignConfig } from '@/app/x/deployment/utils/map-schedule-form-data-to-assign-config';
 import ActionHistoryCardContainer from '@/app/x/deployment/containers/action-history-card-container';
 import { useTargetsTableStore } from '@/stores/targets-table-store';
 import { useTargetActionsTableStore } from '@/stores/target-action-table-store';
 import { ExpandableCardProvider } from '@/app/components/card/expandable-card-context';
-
-const mapScheduleFormDataToAssignConfig = (id: string | number, data?: ScheduleFormData): AssignConfig => {
-  if (!data) {
-    return {
-      id: id,
-    };
-  }
-  const assignConfig: AssignConfig = {
-    type: data.mode,
-    maintenanceWindow: data.maintenanceWindow
-      ? {
-          schedule: data.schedule,
-          duration: data.duration,
-          timezone: data.timeZone,
-        }
-      : undefined,
-    id: id,
-  };
-  if (data.mode === 'timeforced' && data.forcedDate) {
-    assignConfig.forcetime = new Date(data.forcedDate).getTime();
-  }
-  return assignConfig;
-};
 
 export default function DeploymentDndLayoutContainer() {
   const mouseSensor = useSensor(MouseSensor, {
