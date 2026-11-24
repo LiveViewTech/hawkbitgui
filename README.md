@@ -40,14 +40,15 @@ Create a `.env` file (you can copy from `.env.example`) and set:
 ```dotenv
 NEXTAUTH_SECRET=replace-with-a-long-random-secret
 NEXTAUTH_URL=http://localhost:3000
-NEXT_PUBLIC_HAWKBIT_API_URL=http://localhost:8080
+HAWKBIT_API_URL=http://localhost:8080
 ```
 
 Notes:
 
 - `NEXTAUTH_SECRET` should be a strong random string.
 - `NEXTAUTH_URL` must match the URL where users access HawkbitGUI.
-- `NEXT_PUBLIC_HAWKBIT_API_URL` must point to your Hawkbit server base URL.
+- `HAWKBIT_API_URL` must point to your Hawkbit server base URL. It is read at runtime by the
+  server-side proxy, so the same Docker image can be used with different Hawkbit servers.
 
 ### 3) Development mode
 
@@ -72,4 +73,4 @@ The app runs on port `3000` by default.
 
 ## Configuration
 
-You have to set in `.env` the URL for the Hawkbit Server by setting the `NEXT_PUBLIC_HAWKBIT_API_URL` variable.
+You have to set the URL of the Hawkbit Server with the `HAWKBIT_API_URL` variable (in `.env`, or as a container environment variable).
