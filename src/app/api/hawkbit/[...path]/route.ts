@@ -78,6 +78,12 @@ export async function GET(request: NextRequest, context: { params: Promise<{ pat
       responseType: isBinaryExpected ? 'arraybuffer' : 'json',
     });
 
+    // 204 No Content (e.g. a target with no installed distribution set): a response with this status cannot have a
+    // body, so NextResponse.json() would throw and the client would get a 500.
+    if (axiosResponse.status === 204) {
+      return new NextResponse(null, { status: 204 });
+    }
+
     if (isBinaryExpected) {
       return new NextResponse(axiosResponse.data, {
         status: axiosResponse.status,
